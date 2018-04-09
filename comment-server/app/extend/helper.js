@@ -10,9 +10,9 @@ const moment = require('moment');
 exports.formatTime = time => moment(time).format('YYYY-MM-DD hh:mm:ss');
 
 // 处理成功响应
-exports.success = ({ ctx, res = null, msg = '请求成功' }) => {
+exports.success = ({ ctx, res = null, code = 1000, msg = '请求成功' }) => {
   ctx.body = {
-    code: 1000,
+    code,
     data: res,
     msg,
   };
