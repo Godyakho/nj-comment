@@ -10,6 +10,20 @@ Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
+// 拦截请求
+router.beforeEach((to, from, next) => {
+  // 用户登录拦截
+  if (to.path.indexOf('/login') > -1) {
+    next({path: '/'})
+  }
+  let login = sessionStorage.getItem('login')
+  if (!login && to.path.indexOf('/list') > -1) {
+    next({ path: '/' })
+  } else {
+    next()
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
