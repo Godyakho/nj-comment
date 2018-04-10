@@ -8,20 +8,20 @@
 const Service = require('egg').Service;
 
 class UserService extends Service {
-  async create(username, casename) {
+  async create(username, cid) {
     const date = new Date();
     const createtime = date.getTime().toString();
-    const result = await this.app.mysql.insert('user', { username, casename, createtime });
+    const result = await this.app.mysql.insert('user', { username, cid, createtime });
     const user = {
       uid: result.insertId,
       username,
-      casename,
+      cid,
     };
     return { user };
   }
 
-  async get(username, casename) {
-    const user = await this.app.mysql.get('user', { username, casename });
+  async get(username, cid) {
+    const user = await this.app.mysql.get('user', { username, cid });
     return user;
   }
 }

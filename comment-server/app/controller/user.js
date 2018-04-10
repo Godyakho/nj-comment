@@ -12,14 +12,22 @@ class UserController extends Controller {
     const ctx = this.ctx;
     const username = ctx.request.body.username;
     const casename = ctx.request.body.casename;
-    const user = await ctx.service.user.get(username, casename);
+    const casedata = await ctx.service.case.get(casename);
+    if (!casedata) {
+      const res = null;
+      const code = 4000;
+      const msg = '没有相关活动，请检查活动名';
+      ctx.helper.success({ ctx, res, code, msg });
+      return;
+    }
+    const user = await ctx.service.user.get(username, casedata.cid);
     if (user) {
       const res = null;
       const code = 4000;
       const msg = '用户名重复不能创建';
       ctx.helper.success({ ctx, res, code, msg });
     } else {
-      const res = await ctx.service.user.create(username, casename);
+      const res = await ctx.service.user.create(username, casedata.cid);
       ctx.helper.success({ ctx, res });
     }
 
