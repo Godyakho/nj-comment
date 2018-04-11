@@ -12,4 +12,5 @@ module.exports = app => {
   router.post('/comment/create', controller.comment.create);
   router.post('/comment/get', controller.comment.get);
   router.put('/comment/update', controller.comment.update);
+  app.io.of('/chat').route('chat', app.io.controllers.chat);
 };

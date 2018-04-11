@@ -32,6 +32,15 @@ module.exports = appInfo => {
     agent: false,
   };
 
+  exports.io = {
+    namespace: {
+      '/chat': {
+        connectionMiddleware: [ 'auth' ],
+        packetMiddleware: [ 'filter' ],
+      },
+    },
+  };
+
   // add your config here
   config.middleware = [ 'errorHandler' ];
 
