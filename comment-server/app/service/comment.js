@@ -48,6 +48,12 @@ class CommentService extends Service {
     }
     return null;
   }
+
+  async getIo() {
+    // 派发成功
+    const message = this.ctx.req.args[0];
+    this.ctx.server.sockets.emit('res', message);
+  }
 }
 
 module.exports = CommentService;

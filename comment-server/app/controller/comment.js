@@ -71,5 +71,11 @@ class CommentController extends Controller {
     }
     ctx.helper.success({ ctx, res });
   }
+
+  async getIo() {
+    const { ctx } = this;
+
+    await ctx.service.comment.getIo();
+  }
 }
 module.exports = CommentController;
