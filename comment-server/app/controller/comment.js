@@ -9,11 +9,11 @@ const Controller = require('egg').Controller;
 
 class CommentController extends Controller {
 
-  async create() {
+  async create(iousername, iocasename, iocontent) {
     const ctx = this.ctx;
-    const username = ctx.request.body.username;
-    const casename = ctx.request.body.casename;
-    const content = ctx.request.body.content;
+    const username = ctx.request.body.username || iousername;
+    const casename = ctx.request.body.casename || iocasename;
+    const content = ctx.request.body.content || iocontent;
     const casedata = await ctx.service.case.get(casename);
     if (!casedata) {
       const res = null;
