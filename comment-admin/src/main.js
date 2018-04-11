@@ -5,6 +5,9 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
+import VueSocketio from 'vue-socket.io'
+
+Vue.use(VueSocketio, 'http://127.0.0.1:7001/')
 
 Vue.use(ElementUI)
 
@@ -29,5 +32,13 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  sockets: {
+    connect: function () {
+      console.log('socket connected')
+    },
+    res: function (val) {
+      console.log('接收到服务端消息', val)
+    }
+  }
 })
