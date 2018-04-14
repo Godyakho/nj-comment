@@ -6,8 +6,11 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
 import VueSocketio from 'vue-socket.io'
+import axios from 'axios'
 
 Vue.use(VueSocketio, 'http://127.0.0.1:7001/')
+Vue.config.productionTip = false
+Vue.prototype.$http = axios
 
 Vue.use(ElementUI)
 

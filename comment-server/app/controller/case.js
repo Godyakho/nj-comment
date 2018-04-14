@@ -21,6 +21,7 @@ class CaseController extends Controller {
     const res = await ctx.service.case.create(casename);
     ctx.helper.success({ ctx, res });
   }
+
   async get() {
     const { ctx } = this;
     const casename = ctx.request.body.casename;
@@ -32,6 +33,7 @@ class CaseController extends Controller {
       return;
     }
     ctx.helper.success({ ctx, res });
+
   }
 }
 

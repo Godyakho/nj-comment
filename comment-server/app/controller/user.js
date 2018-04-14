@@ -20,14 +20,14 @@ class UserController extends Controller {
       ctx.helper.success({ ctx, res, code, msg });
       return;
     }
-    const user = await ctx.service.user.get(username, casedata.cid);
+    const user = await ctx.service.user.get(username, casedata.id);
     if (user) {
       const res = null;
       const code = 4000;
       const msg = '用户名重复不能创建';
       ctx.helper.success({ ctx, res, code, msg });
     } else {
-      const res = await ctx.service.user.create(username, casedata.cid);
+      const res = await ctx.service.user.create(username, casedata.id);
       ctx.helper.success({ ctx, res });
     }
 

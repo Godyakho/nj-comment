@@ -17,31 +17,47 @@
 </template>
 
 <script type="text/ecmascript-6">
+
+import { CreateComment, CreateUser } from '@/api/request'
+
 export default {
   data () {
     return {
+      username: '',
+      casename: 'IBM大会',
       text: ''
     }
   },
   methods: {
     send () {
       const msg = {
-        username: '大碴子',
-        casename: 'IBM全球大会0410',
+        username: this.username,
+        casename: this.casename,
         content: this.text
       }
-      this.$socket.emit('chat', msg)
+      CreateComment(msg).then(res => {
+        if (res.data.code === 1000) {
+          console.log('发送评论', res)
+        } else {
+          console.log('发送评论失败', res)
+        }
+      })
+      // this.$socket.emit('chat', msg)
     }
   },
   created: function () {
+    this.username = '游客' + Math.floor(Math.random() * 100000)
+    let msg = {
+      username: this.username,
+      casename: this.casename
+    }
+    CreateUser(msg).then(res => {
+      if (res.data.code === 1000) {
+        console.log('添加用户', res)
+      }
+    })
     this.$options.sockets.chat = (data) => {
       console.log('组件监听', data)
-      // const tmpData = {
-      // ...data.user,
-      // msg: data.msg,
-      // time: data.time
-      // }
-      // this.$data.list.push(tmpData)
     }
   }
 }

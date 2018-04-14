@@ -18,6 +18,8 @@ class CommentService extends Service {
       comid: result.insertId,
       uid,
       cid,
+      content,
+      createtime,
     };
     return { comment };
   }
@@ -25,17 +27,23 @@ class CommentService extends Service {
   async get(username, casename, offset, status) {
     const innerOffset = offset || 0; // 分页开始
     const innerStatus = status || 2; // 默认返回待审
-    const result = await this.app.mysql.select('comment', { // 搜索 post 表
+    const result = await this.app.mysql.select([ 'comment', 'user', 'case' ], { // 搜索 post 表
       where: { status: innerStatus }, // WHERE 条件
-      orders: [[ 'createtime', 'desc' ]], // 排序方式
+      columns: [ 'username', 'casename', 'content', 'comment.createtime' ],
+      orders: [[ 'comment.createtime', 'desc' ]], // 排序方式
       limit: 20, // 返回数据量
       offset: innerOffset, // 数据偏移量
     });
+    const totalCount = await this.app.mysql.count('comment', { status: innerStatus });
     if (result.length > 0) {
-      return result;
+      return {
+        list: result,
+        sum: totalCount,
+      };
     }
     return null;
   }
+
 
   async update(comid, status) {
     const row = {

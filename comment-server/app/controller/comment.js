@@ -8,12 +8,11 @@
 const Controller = require('egg').Controller;
 
 class CommentController extends Controller {
-
-  async create(iousername, iocasename, iocontent) {
+  async create() {
     const ctx = this.ctx;
-    const username = ctx.request.body.username || iousername;
-    const casename = ctx.request.body.casename || iocasename;
-    const content = ctx.request.body.content || iocontent;
+    const username = ctx.request.body.username;
+    const casename = ctx.request.body.casename;
+    const content = ctx.request.body.content;
     const casedata = await ctx.service.case.get(casename);
     if (!casedata) {
       const res = null;
@@ -22,7 +21,7 @@ class CommentController extends Controller {
       ctx.helper.success({ ctx, res, code, msg });
       return;
     }
-    const user = await ctx.service.user.get(username, casedata.cid);
+    const user = await ctx.service.user.get(username, casedata.id);
     if (!user) {
       const res = null;
       const code = 4000;
@@ -37,9 +36,9 @@ class CommentController extends Controller {
       ctx.helper.success({ ctx, res, code, msg });
       return;
     }
-
-    const res = await ctx.service.comment.create(user.uid, casedata.cid, content);
-    ctx.helper.success({ ctx, res });
+    const code = 1000;
+    const res = await ctx.service.comment.create(user.id, casedata.id, content);
+    ctx.helper.success({ ctx, res, code });
   }
 
   async get() {
@@ -74,7 +73,6 @@ class CommentController extends Controller {
 
   async getIo() {
     const { ctx } = this;
-
     await ctx.service.comment.getIo();
   }
 }
