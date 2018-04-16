@@ -22,7 +22,7 @@ class CommentController extends Controller {
       ctx.helper.success({ ctx, res, code, msg });
       return;
     }
-    const user = await ctx.service.user.get(username, casedata.cid);
+    const user = await ctx.service.user.get(username, casedata.id);
     if (!user) {
       const res = null;
       const code = 4000;
@@ -38,7 +38,7 @@ class CommentController extends Controller {
       return;
     }
 
-    const res = await ctx.service.comment.create(user.uid, casedata.cid, content);
+    const res = await ctx.service.comment.create(user.uid, casedata.id, content);
     ctx.helper.success({ ctx, res });
   }
 
@@ -48,7 +48,9 @@ class CommentController extends Controller {
     const casename = ctx.request.body.casename || '';
     const offset = (ctx.request.body.page - 1) * 20 || 0;
     const status = ctx.request.body.status || 2;
-    const res = await ctx.service.comment.get(username, casename, offset, status);
+    const casedata = await ctx.service.case.get(casename) || {};
+    const user = await ctx.service.user.get(username, casedata.id) || {};
+    const res = await ctx.service.comment.get(user.id, casedata.id, username, casename, offset, status);
     if (!res) {
       const code = 4000;
       const msg = '无相关信息';

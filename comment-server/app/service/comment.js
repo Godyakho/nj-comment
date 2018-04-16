@@ -22,20 +22,29 @@ class CommentService extends Service {
     return { comment };
   }
 
-  async get(username, casename, offset, status) {
-    const innerOffset = offset || 0; // 分页开始
-    const innerStatus = status || 2; // 默认返回待审
-    const result = await this.app.mysql.select([ 'comment', 'user', 'case' ], { // 搜索 post 表
-      where: { status: innerStatus }, // WHERE 条件
-      columns: [ 'username', 'casename', 'content', 'comment.createtime' ],
+  async get(uid = '', cid = '', username = '', casename = '', offset = 0, status = 2) {
+    let whereObj = {};
+    if (!uid && !cid) {
+      whereObj = { status };
+    } else {
+      !uid ? whereObj = { status, cid } : whereObj = { status, uid, cid };
+    }
+    const result = await this.app.mysql.select([ 'comment' ], {
+      where: whereObj, // WHERE 条件
+      columns: [ 'id', 'content', 'status', 'createtime' ],
       orders: [[ 'comment.createtime', 'desc' ]], // 排序方式
       limit: 20, // 返回数据量
-      offset: innerOffset, // 数据偏移量
+      offset, // 数据偏移量
     });
-    const totalCount = await this.app.mysql.count('comment', { status: innerStatus });
+    const totalCount = await this.app.mysql.count('comment', whereObj);
+    const newResult = result.map(function(item) {
+      item.username = username;
+      item.casename = casename;
+      return item;
+    });
     if (result.length > 0) {
       return {
-        list: result,
+        list: newResult,
         sum: totalCount,
       };
     }
