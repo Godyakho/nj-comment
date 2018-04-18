@@ -18,38 +18,26 @@ class CommentService extends Service {
       comid: result.insertId,
       uid,
       cid,
+      content,
+      createtime,
     };
     return { comment };
   }
 
-  async get(uid = '', cid = '', username = '', casename = '', offset = 0, status = 2) {
-    let whereObj = {};
-    if (!uid && !cid) {
-      whereObj = { status };
-    } else {
-      !uid ? whereObj = { status, cid } : whereObj = { status, uid, cid };
-    }
-    const result = await this.app.mysql.select([ 'comment' ], {
-      where: whereObj, // WHERE 条件
-      columns: [ 'id', 'content', 'status', 'createtime' ],
-      orders: [[ 'comment.createtime', 'desc' ]], // 排序方式
-      limit: 20, // 返回数据量
-      offset, // 数据偏移量
-    });
-    const totalCount = await this.app.mysql.count('comment', whereObj);
-    const newResult = result.map(function(item) {
-      item.username = username;
-      item.casename = casename;
-      return item;
-    });
+
+  async get(cid, page, limit, status) {
+    const sql = this.app.mysql;
+    const result = await sql.query('SELECT content, table_comment.id, table_user.username, table_case.casename, table_comment.status, table_comment.createtime  FROM comment as table_comment INNER JOIN user as table_user ON table_comment.uid = table_user.id INNER JOIN cases as table_case ON table_comment.cid = table_case.id WHERE table_comment.status = ' + sql.escape(status) + ' AND table_comment.uid = table_user.id AND table_comment.cid = ' + sql.escape(cid) + ' limit ' + sql.escape(page) + ',' + sql.escape(limit) + '');
+    const totalCount = await sql.query('SELECT COUNT(*) FROM comment INNER JOIN user ON comment.uid = user.id INNER JOIN  cases ON comment.cid = cases.id WHERE comment.status = ' + sql.escape(status) + ' AND comment.uid = user.id AND comment.cid = ' + sql.escape(cid) + '');
     if (result.length > 0) {
       return {
-        list: newResult,
-        sum: totalCount,
+        list: result,
+        sum: totalCount[0]['COUNT(*)'],
       };
     }
     return null;
   }
+
 
   async update(comid, status) {
     const row = {

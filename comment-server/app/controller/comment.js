@@ -8,13 +8,12 @@
 const Controller = require('egg').Controller;
 
 class CommentController extends Controller {
-
-  async create(iousername, iocasename, iocontent) {
+  async create() {
     const ctx = this.ctx;
-    const username = ctx.request.body.username || iousername;
-    const casename = ctx.request.body.casename || iocasename;
-    const content = ctx.request.body.content || iocontent;
-    const casedata = await ctx.service.case.get(casename);
+    const username = ctx.request.body.username;
+    const casename = ctx.request.body.casename;
+    const content = ctx.request.body.content;
+    const casedata = await ctx.service.case.getcase(casename);
     if (!casedata) {
       const res = null;
       const code = 4000;
@@ -37,20 +36,17 @@ class CommentController extends Controller {
       ctx.helper.success({ ctx, res, code, msg });
       return;
     }
-
-    const res = await ctx.service.comment.create(user.uid, casedata.id, content);
+    const res = await ctx.service.comment.create(user.id, casedata.id, content);
     ctx.helper.success({ ctx, res });
   }
 
   async get() {
     const { ctx } = this;
-    const username = ctx.request.body.username || '';
-    const casename = ctx.request.body.casename || '';
-    const offset = (ctx.request.body.page - 1) * 20 || 0;
+    const cid = ctx.request.body.cid || 2;
+    const page = (ctx.request.body.page - 1) * 10 || 0;
     const status = ctx.request.body.status || 2;
-    const casedata = await ctx.service.case.get(casename) || {};
-    const user = await ctx.service.user.get(username, casedata.id) || {};
-    const res = await ctx.service.comment.get(user.id, casedata.id, username, casename, offset, status);
+    const limit = ctx.request.body.limit || 10;
+    const res = await ctx.service.comment.get(cid, page, limit, status);
     if (!res) {
       const code = 4000;
       const msg = '无相关信息';
@@ -76,8 +72,12 @@ class CommentController extends Controller {
 
   async getIo() {
     const { ctx } = this;
-
     await ctx.service.comment.getIo();
+  }
+
+  index() {
+    const { ctx } = this;
+    ctx.body = 'hello 7001';
   }
 }
 module.exports = CommentController;
