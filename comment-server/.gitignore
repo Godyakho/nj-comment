@@ -11,3 +11,5 @@ run/
 *.sw*
 *.un~
 .vscode
+config/config.default.js
+config/

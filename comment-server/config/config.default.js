@@ -16,11 +16,9 @@ module.exports = appInfo => {
   config.proxy = true;
 
   config.security = {
-    // ignore: '/api/',
     domainWhiteList: [
-      '127.0.0.1:80',
-      '127.0.0.1:8001',
-      'chinabyte.com',
+      '127.0.0.1:8080',
+      'localhost:8080',
     ],
     methodnoallow: {
       enable: false,
@@ -43,10 +41,10 @@ module.exports = appInfo => {
       // 端口号
       port: '3306',
       // 用户名
-      user: 'tmg',
+      user: '',
       // user: 'root',
       // 密码
-      password: 'tmgzcb',
+      password: '',
       // password: 'root',
       // 数据库名
       database: 'commentdb',
