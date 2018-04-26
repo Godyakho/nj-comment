@@ -13,14 +13,15 @@ module.exports = appInfo => {
     },
   };
 
+  config.proxy = true;
+
   config.security = {
     // ignore: '/api/',
-    // domainWhiteList: [
-    //   '127.0.0.1:8080',
-    //   'localhost:8080',
-    //   '127.0.0.1:80',
-    //   '0.0.0.0',
-    // ],
+    domainWhiteList: [
+      '127.0.0.1:80',
+      '127.0.0.1:8001',
+      'chinabyte.com',
+    ],
     methodnoallow: {
       enable: false,
     },
@@ -28,9 +29,11 @@ module.exports = appInfo => {
       enable: false,
     },
   };
+
   exports.cors = {
     origin: () => '*',
   };
+
   exports.mysql = {
     // 单数据库信息配置
     client: {
