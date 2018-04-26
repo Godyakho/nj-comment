@@ -6,6 +6,7 @@
 module.exports = app => {
   console.log('router');
   const { router, controller } = app;
+  router.get('/', controller.comment.index);
   router.post('/user/create', controller.user.create);
   router.post('/user/get', controller.user.get);
   router.post('/case/get', controller.case.get);

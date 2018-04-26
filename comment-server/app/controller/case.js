@@ -33,6 +33,7 @@ class CaseController extends Controller {
       return;
     }
     ctx.helper.success({ ctx, res });
+
   }
 }
 

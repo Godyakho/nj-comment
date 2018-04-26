@@ -24,7 +24,6 @@ class CommentService extends Service {
     return { comment };
   }
 
-
   async get(cid, page, limit, status) {
     const sql = this.app.mysql;
     const result = await sql.query('SELECT content, table_comment.id, table_user.username, table_case.casename, table_comment.status, table_comment.createtime  FROM comment as table_comment INNER JOIN user as table_user ON table_comment.uid = table_user.id INNER JOIN cases as table_case ON table_comment.cid = table_case.id WHERE table_comment.status = ' + sql.escape(status) + ' AND table_comment.uid = table_user.id AND table_comment.cid = ' + sql.escape(cid) + ' limit ' + sql.escape(page) + ',' + sql.escape(limit) + '');
@@ -37,7 +36,6 @@ class CommentService extends Service {
     }
     return null;
   }
-
 
   async update(comid, status) {
     const row = {

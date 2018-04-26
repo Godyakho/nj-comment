@@ -74,5 +74,10 @@ class CommentController extends Controller {
     const { ctx } = this;
     await ctx.service.comment.getIo();
   }
+
+  index() {
+    const { ctx } = this;
+    ctx.body = 'hello 7001';
+  }
 }
 module.exports = CommentController;
