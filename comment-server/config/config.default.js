@@ -7,9 +7,20 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_njplus';
 
   config.security = {
+    domainWhiteList: [
+      '127.0.0.1:8080',
+      'localhost:8080',
+    ],
+    methodnoallow: {
+      enable: false,
+    },
     csrf: {
       enable: false,
     },
+  };
+
+  exports.cors = {
+    origin: () => '*',
   };
 
   exports.mysql = {
@@ -18,7 +29,7 @@ module.exports = appInfo => {
       // host
       host: '127.0.0.1',
       // 端口号
-      port: '8889',
+      port: '3306',
       // 用户名
       user: 'root',
       // 密码

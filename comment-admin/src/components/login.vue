@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     submit () {
-      if (this.username === '大佬' && this.password === 'chinabyte001') {
+      if (this.username === 'yh' && this.password === '1') {
         sessionStorage.setItem('login', true)
         this.$router.push('/list')
       } else {

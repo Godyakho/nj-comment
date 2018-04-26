@@ -20,8 +20,8 @@ class UserService extends Service {
     return { user };
   }
 
-  async get(username, cid) {
-    const user = await this.app.mysql.get('user', { username, cid });
+  async get(username) {
+    const user = await this.app.mysql.get('user', { username });
     return user;
   }
 }

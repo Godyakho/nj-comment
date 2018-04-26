@@ -25,9 +25,9 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  background: #2c3e50;
+  background: #eee;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow: scroll;
 }
 </style>
