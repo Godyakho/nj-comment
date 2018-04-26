@@ -24,11 +24,7 @@ class CommentService extends Service {
     return { comment };
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
->>>>>>> 6c53ed3d2fe93c88022130c9e9952922ae96201f
   async get(cid, page, limit, status) {
     const sql = this.app.mysql;
     const result = await sql.query('SELECT content, table_comment.id, table_user.username, table_case.casename, table_comment.status, table_comment.createtime  FROM comment as table_comment INNER JOIN user as table_user ON table_comment.uid = table_user.id INNER JOIN cases as table_case ON table_comment.cid = table_case.id WHERE table_comment.status = ' + sql.escape(status) + ' AND table_comment.uid = table_user.id AND table_comment.cid = ' + sql.escape(cid) + ' limit ' + sql.escape(page) + ',' + sql.escape(limit) + '');
@@ -37,26 +33,6 @@ class CommentService extends Service {
       return {
         list: result,
         sum: totalCount[0]['COUNT(*)'],
-<<<<<<< HEAD
-=======
-  async get(username, casename, offset, status) {
-    const innerOffset = offset || 0; // 分页开始
-    const innerStatus = status || 2; // 默认返回待审
-    const result = await this.app.mysql.select([ 'comment', 'user', 'case' ], { // 搜索 post 表
-      where: { status: innerStatus }, // WHERE 条件
-      columns: [ 'username', 'casename', 'content', 'comment.createtime' ],
-      orders: [[ 'comment.createtime', 'desc' ]], // 排序方式
-      limit: 20, // 返回数据量
-      offset: innerOffset, // 数据偏移量
-    });
-    const totalCount = await this.app.mysql.count('comment', { status: innerStatus });
-    if (result.length > 0) {
-      return {
-        list: result,
-        sum: totalCount,
->>>>>>> or/master
-=======
->>>>>>> 6c53ed3d2fe93c88022130c9e9952922ae96201f
       };
     }
     return null;
