@@ -11,7 +11,7 @@
           </el-input>
       </el-col>
       <el-col :span="6">
-        <el-select v-model="casenameSelectVal" placeholder="请选择项目大会">
+        <el-select v-model="casenameSelectVal" @change="_getCase (casenameSelectVal)" placeholder="请选择项目大会">
           <el-option
             v-for="item in casenameSelect"
             :key="item.value"
@@ -44,7 +44,7 @@
           </el-table>
       </el-col>
     </el-row>
-
+    <el-pagination background :current-page.sync="currentPage" :page-size="10" @current-change="handelPageChange" layout="prev, pager, next,total" :total="sum"></el-pagination>
     <el-dialog title="添加活动" :visible.sync="caseBox" width="30%" center>
       <el-input v-model="caseVal" placeholder="请输入活动名称"></el-input>
        <span slot="footer" class="dialog-footer">
@@ -52,39 +52,32 @@
       <el-button type="" @click="caseBox=false">取消</el-button>
       </span>
     </el-dialog>
-
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-import { CreateCase, GetComment, GetCase } from '@/api/request'
+import { CreateCase, GetComment, GetCase, UpdateComment } from '@/api/request'
 
 export default {
   data () {
     return {
+      sum: 0,
+      currentPage: 0,
       caseBox: false,
       caseVal: '',
       casenameSelectVal: '',
-      tableData: [
-        // {
-        //   createTime: '2018-10-11',
-        //   caseName: 'IBM全球大会',
-        //   userName: '小喵',
-        //   content: '大会办的不错'
-        // }
-      ],
+      tableData: [],
       search: '',
-      casenameSelect: [
-        {
-          label: 'IBM大会',
-          value: 'IBM大会'
-        }
-      ]
+      casenameSelect: [],
+      nowcid: 2
     }
   },
   created () {
-    this._getData()
-    this._getCase()
+    GetCase().then(res => {
+      this.casenameSelectVal = res.data.data[0].value
+      this.casenameSelect = res.data.data
+      this._getData()
+    })
   },
   methods: {
     MeetAdd () {
@@ -96,31 +89,85 @@ export default {
       } else {
         CreateCase(msg).then(res => {
           if (res.data.code === 1000) {
-            console.log(res)
+            GetCase().then(res => {
+              this.casenameSelect = res.data.data
+            })
             this.caseBox = false
           } else {
-            console.log(res)
+            alert(res)
           }
         })
       }
     },
-    _getCase () {
-      GetCase().then(res => {
-        console.log('获取活动', res)
+    _getCase (casename) {
+      let msg = {
+        casename: casename
+      }
+      GetCase(msg).then(res => {
+        this.currentPage = 1
+        this.nowcid = res.data.data.id
+        var Dmsg = {
+          cid: this.nowcid
+        }
+        this._getData(Dmsg)
       })
     },
-    _getData (page) {
-      GetComment().then(res => {
+    _getData (msg) {
+      GetComment(msg).then(res => {
         if (res.data.code === 1000) {
-          console.log(res.data.data.list)
+          console.log('获取评论', res)
           this.tableData = res.data.data.list
+          this.sum = res.data.data.sum
         } else {
+          this.tableData = []
           console.log('暂无评论', res)
+          this.sum = 0
         }
       })
     },
     updateStatus (row, type) {
-      console.log(type)
+      let msg = {
+        comid: row.id,
+        status: type
+      }
+      UpdateComment(msg).then(res => {
+        if (res.data.code === 1000) {
+          this.$socket.emit('chat', [row.username, row.content, row.casename])
+          var newdata = {
+            cid: this.nowcid,
+            page: this.currentPage
+          }
+          GetComment(newdata).then(res => {
+            if (res.data.code === 1000) {
+              console.log('获取评论', res)
+              this.tableData = res.data.data.list
+              this.sum = res.data.data.sum
+            } else {
+              if (this.currentPage - 1 > 0) {
+                this._getData({
+                  cid: this.nowcid,
+                  page: this.currentPage - 1
+                })
+              } else {
+                this.tableData = []
+                console.log('暂无评论', res)
+                this.sum = 0
+              }
+            }
+          })
+          console.log('更改成功', res)
+        } else {
+          console.log('更改失败', res)
+        }
+      })
+    },
+    handelPageChange (val) {
+      this.currentPage = val
+      let msg = {
+        cid: this.nowcid,
+        page: val
+      }
+      this._getData(msg)
     }
   }
 }

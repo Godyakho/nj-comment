@@ -22,6 +22,14 @@ export function CreateComment (params) {
   })
 }
 
+export function UpdateComment (params) {
+  return fetch({
+    url: '/comment/update',
+    method: 'post',
+    data: params
+  })
+}
+
 // 添加活动
 export function CreateCase (params) {
   return fetch({

@@ -7,7 +7,6 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_njplus';
 
   config.security = {
-    // ignore: '/api/',
     domainWhiteList: [
       '127.0.0.1:8080',
       'localhost:8080',
@@ -18,6 +17,10 @@ module.exports = appInfo => {
     csrf: {
       enable: false,
     },
+  };
+
+  exports.cors = {
+    origin: () => '*',
   };
 
   exports.mysql = {

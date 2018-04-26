@@ -12,7 +12,7 @@ class UserController extends Controller {
     const ctx = this.ctx;
     const username = ctx.request.body.username;
     const casename = ctx.request.body.casename;
-    const casedata = await ctx.service.case.get(casename);
+    const casedata = await ctx.service.case.getcase(casename);
     if (!casedata) {
       const res = null;
       const code = 4000;

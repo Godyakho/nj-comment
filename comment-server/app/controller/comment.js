@@ -13,7 +13,7 @@ class CommentController extends Controller {
     const username = ctx.request.body.username;
     const casename = ctx.request.body.casename;
     const content = ctx.request.body.content;
-    const casedata = await ctx.service.case.get(casename);
+    const casedata = await ctx.service.case.getcase(casename);
     if (!casedata) {
       const res = null;
       const code = 4000;
@@ -36,18 +36,17 @@ class CommentController extends Controller {
       ctx.helper.success({ ctx, res, code, msg });
       return;
     }
-    const code = 1000;
     const res = await ctx.service.comment.create(user.id, casedata.id, content);
-    ctx.helper.success({ ctx, res, code });
+    ctx.helper.success({ ctx, res });
   }
 
   async get() {
     const { ctx } = this;
-    const username = ctx.request.body.username || '';
-    const casename = ctx.request.body.casename || '';
-    const offset = (ctx.request.body.page - 1) * 20 || 0;
+    const cid = ctx.request.body.cid || 2;
+    const page = (ctx.request.body.page - 1) * 10 || 0;
     const status = ctx.request.body.status || 2;
-    const res = await ctx.service.comment.get(username, casename, offset, status);
+    const limit = ctx.request.body.limit || 10;
+    const res = await ctx.service.comment.get(cid, page, limit, status);
     if (!res) {
       const code = 4000;
       const msg = '无相关信息';

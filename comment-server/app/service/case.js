@@ -8,10 +8,10 @@
 const Service = require('egg').Service;
 
 class CaseService extends Service {
-  async create(casename) {
+  async createcase(casename) {
     const date = new Date();
     const createtime = date.getTime().toString();
-    const result = await this.app.mysql.insert('case', { casename, createtime });
+    const result = await this.app.mysql.insert('cases', { casename, createtime });
     const res = {
       cid: result.insertId,
       casename,
@@ -19,9 +19,20 @@ class CaseService extends Service {
     return { res };
   }
 
-  async get(casename) {
-    const res = await this.app.mysql.get('case', { casename });
-    return res;
+  async getcase(casename) {
+    let res;
+    let newres;
+    if (!casename) {
+      res = await this.app.mysql.select('cases');
+      newres = res.map(item => {
+        item.value = item.casename;
+        item.label = item.casename;
+        return item;
+      });
+    } else {
+      res = await this.app.mysql.get('cases', { casename });
+    }
+    return newres === '' ? newres : res;
   }
 }
 

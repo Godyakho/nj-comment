@@ -8,7 +8,7 @@ import router from './router'
 import VueSocketio from 'vue-socket.io'
 import axios from 'axios'
 
-Vue.use(VueSocketio, 'http://127.0.0.1:7001/')
+Vue.use(VueSocketio, 'http://127.0.0.1:7001')
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
 
@@ -37,8 +37,15 @@ new Vue({
   components: { App },
   template: '<App/>',
   sockets: {
+  // "connect", "error", "disconnect", "reconnect", "reconnect_attempt", "reconnecting", "reconnect_error", "reconnect_failed", "connect_error", "connect_timeout", "connecting", "ping", "pong"
     connect: function () {
       console.log('socket connected')
+    },
+    disconnect: function (data) {
+      console.log(data)
+    },
+    error: function (data) {
+      console.log(data)
     },
     res: function (val) {
       console.log('接收到服务端消息', val)

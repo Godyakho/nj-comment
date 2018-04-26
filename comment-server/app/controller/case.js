@@ -10,7 +10,7 @@ class CaseController extends Controller {
   async create() {
     const { ctx } = this;
     const casename = ctx.request.body.casename;
-    const exist = await ctx.service.case.get(casename);
+    const exist = await ctx.service.case.getcase(casename);
     if (exist) {
       const code = 4000;
       const msg = '活动重复';
@@ -18,14 +18,14 @@ class CaseController extends Controller {
       ctx.helper.success({ ctx, res, code, msg });
       return;
     }
-    const res = await ctx.service.case.create(casename);
+    const res = await ctx.service.case.createcase(casename);
     ctx.helper.success({ ctx, res });
   }
 
   async get() {
     const { ctx } = this;
     const casename = ctx.request.body.casename;
-    const res = await ctx.service.case.get(casename);
+    const res = await ctx.service.case.getcase(casename);
     if (!res) {
       const code = 4000;
       const msg = '无相关信息';
@@ -33,7 +33,6 @@ class CaseController extends Controller {
       return;
     }
     ctx.helper.success({ ctx, res });
-
   }
 }
 
